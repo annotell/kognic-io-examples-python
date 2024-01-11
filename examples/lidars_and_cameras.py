@@ -1,58 +1,61 @@
-from __future__ import absolute_import
-
-from datetime import datetime
-from typing import List, Optional
-from uuid import uuid4
-
-import kognic.io.client as IOC
-import kognic.io.model.scene as SceneModel
-import kognic.io.model.scene.lidars_and_cameras as LC
-import kognic.io.model.scene.resources as ResourceModel
-from examples.calibration.calibration import create_sensor_calibration
-from kognic.io.logger import setup_logging
+from kognic.io.client import KognicIOClient
+from kognic.io.model.scene.lidars_and_cameras import Frame, LidarsAndCameras
 from kognic.io.model.scene.metadata.metadata import MetaData
+from kognic.io.model.scene.resources import Image, PointCloud
 
+# Frame
+lidar_sensor1 = "lidar"
+cam_sensor1 = "RFC01"
+cam_sensor2 = "RFC02"
 
-def run(
-    client: IOC.KognicIOClient, project: Optional[str], annotation_types: Optional[List[str]] = None, dryrun: bool = True
-) -> SceneModel.CreateSceneResponse:
-    annotation_types = annotation_types or []
-    print("Creating Lidars And Cameras Scene...")
-
-    lidar_sensor1 = "lidar"
-    cam_sensor1 = "RFC01"
-    cam_sensor2 = "RFC02"
-    cam_sensor3 = "RFC03"
-    metadata = MetaData(**{"location-lat": 27.986065, "location-long": 86.922623, "vehicle_id": "abg"})
-
-    # Create calibration
-    calibration_spec = create_sensor_calibration(f"Collection {datetime.now()}", [lidar_sensor1], [cam_sensor1, cam_sensor2, cam_sensor3])
-    created_calibration = client.calibration.create_calibration(calibration_spec)
-
-    lidars_and_cameras = LC.LidarsAndCameras(
-        external_id=f"lidars-and-cameras-example-{uuid4()}",
-        frame=LC.Frame(
-            point_clouds=[ResourceModel.PointCloud(filename="./examples/resources/point_cloud_RFL01.las", sensor_name=lidar_sensor1)],
-            images=[
-                ResourceModel.Image(filename="./examples/resources/img_RFC01.jpg", sensor_name=cam_sensor1),
-                ResourceModel.Image(filename="./examples/resources/img_RFC02.jpg", sensor_name=cam_sensor2),
-            ],
+frame = Frame(
+    point_clouds=[
+        PointCloud(
+            filename="./examples/resources/point_cloud_RFL01.las",
+            sensor_name=lidar_sensor1,
+        )
+    ],
+    images=[
+        Image(
+            filename="./examples/resources/img_RFC01.jpg",
+            sensor_name=cam_sensor1,
         ),
-        calibration_id=created_calibration.id,
-        metadata=metadata,
-    )
+        Image(
+            filename="./examples/resources/img_RFC02.jpg",
+            sensor_name=cam_sensor2,
+        ),
+    ],
+    metadata=MetaData(
+        **{
+            "location-lat": 27.986065,
+            "location-long": 86.922623,
+        }
+    ),  # metadata is optional and values are arbitary for this example
+)
 
-    # Add input
-    return client.lidars_and_cameras.create(lidars_and_cameras, project=project, annotation_types=annotation_types, dryrun=dryrun)
+# Scene
+# Note: a scene that involves a lidar sensor must have a calibration.
+# When creating a calibration, all sensors must match those present on the scene.
+# If this is not the case the scene will not be created
+# and a validation error will be returned by the Kognic API.
+lidars_and_cameras = LidarsAndCameras(
+    external_id="<scene_id>",  # specify an id
+    frame=frame,
+    calibration_id="<calibration_id>",  # available via `client.calibration.get_calibrations()`
+    metadata=MetaData(
+        **{
+            "vehicle_id": "abg",
+        }
+    ),  # metadata is optional and values are arbitary for this example
+)
 
+# Create an input on the Kognic Platform
+client = KognicIOClient()
 
-if __name__ == "__main__":
-    setup_logging(level="INFO")
-    client = IOC.KognicIOClient()
-
-    # Project - Available via `client.project.get_projects()`
-    project = "<project-identifier>"
-    # Annotation Types - Available via `client.project.get_annotation_types(project)`
-    annotation_types = ["annotation-type"]
-
-    run(client, project, annotation_types)
+created_input = client.lidars_and_cameras.create(
+    lidars_and_cameras,
+    project="<project_id>",  # available via `client.project.get_projects()`
+    batch="<batch_id>",  # available via `client.project.get_project_batches(project_id)`
+    annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
+    dryrun=True,
+)
