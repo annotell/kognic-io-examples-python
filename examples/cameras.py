@@ -27,7 +27,7 @@ frame = Frame(
 )
 
 # Scene
-scene_cameras = Cameras(
+cameras = Cameras(
     external_id="<scene_id>",  # specify an id
     frame=frame,
     metadata=MetaData(
@@ -41,7 +41,7 @@ scene_cameras = Cameras(
 client = KognicIOClient()
 
 created_input = client.cameras.create(
-    scene_cameras,
+    cameras=cameras,
     project="<project_id>",  # available via `client.project.get_projects()`
     batch="<batch_id>",  # availabel via `client.project.get_project_batches(project_id)`
     annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`

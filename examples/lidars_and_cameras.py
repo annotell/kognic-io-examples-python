@@ -53,7 +53,7 @@ lidars_and_cameras = LidarsAndCameras(
 client = KognicIOClient()
 
 created_input = client.lidars_and_cameras.create(
-    lidars_and_cameras,
+    lidars_and_cameras=lidars_and_cameras,
     project="<project_id>",  # available via `client.project.get_projects()`
     batch="<batch_id>",  # available via `client.project.get_project_batches(project_id)`
     annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
