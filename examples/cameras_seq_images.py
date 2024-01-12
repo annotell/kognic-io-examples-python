@@ -1,9 +1,9 @@
 from kognic.io.client import KognicIOClient
 from kognic.io.model.scene.cameras_sequence import CamerasSequence, Frame
-from kognic.io.model.scene.metadata.metadata import MetaData
+from kognic.io.model.scene.metadata.metadata import MetaData, FrameMetaData
 from kognic.io.model.scene.resources import Image
 
-# Frame
+# Frames
 sensor1 = "RFC01"
 sensor2 = "RFC02"
 
@@ -22,7 +22,7 @@ frames = [
                 sensor_name=sensor2,
             ),
         ],
-        metadata={"dut_status": "active"},
+        metadata=FrameMetaData(**{"dut_status": "active"}),  # metadata is optional and values are arbitary for this example
     ),
     Frame(
         frame_id="2",
@@ -38,7 +38,7 @@ frames = [
                 sensor_name=sensor2,
             ),
         ],
-        metadata={"dut_status": "active"},
+        metadata=FrameMetaData(**{"dut_status": "active"}),  # metadata is optional and values are arbitary for this example
     ),
     Frame(
         frame_id="3",
@@ -54,7 +54,7 @@ frames = [
                 sensor_name=sensor2,
             ),
         ],
-        metadata={"dut_status": "active"},
+        metadata=FrameMetaData(**{"dut_status": "active"}),
     ),
     Frame(
         frame_id="4",
@@ -70,7 +70,7 @@ frames = [
                 sensor_name=sensor2,
             ),
         ],
-        metadata={"dut_status": "active"},
+        metadata=FrameMetaData(**{"dut_status": "active"}),
     ),
     Frame(
         frame_id="5",
@@ -86,7 +86,7 @@ frames = [
                 sensor_name=sensor2,
             ),
         ],
-        metadata={"dut_status": "active"},
+        metadata=FrameMetaData(**{"dut_status": "active"}),
     ),
 ]
 
@@ -113,3 +113,5 @@ created_input = client.cameras_sequence.create(
     annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
     dryrun=True,
 )
+
+print(created_input)  # displays the scene_uuid
