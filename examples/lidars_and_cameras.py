@@ -1,6 +1,6 @@
 from kognic.io.client import KognicIOClient
 from kognic.io.model.scene.lidars_and_cameras import Frame, LidarsAndCameras
-from kognic.io.model.scene.metadata.metadata import MetaData
+from kognic.io.model.scene.metadata.metadata import MetaData, FrameMetaData
 from kognic.io.model.scene.resources import Image, PointCloud
 
 # Frame
@@ -25,7 +25,7 @@ frame = Frame(
             sensor_name=cam_sensor2,
         ),
     ],
-    metadata=MetaData(
+    metadata=FrameMetaData(
         **{
             "location-lat": 27.986065,
             "location-long": 86.922623,
@@ -59,3 +59,5 @@ created_input = client.lidars_and_cameras.create(
     annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
     dryrun=True,
 )
+
+print(created_input)  # displays the scene_uuid
