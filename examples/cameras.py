@@ -38,9 +38,9 @@ client = KognicIOClient()
 
 created_input = client.cameras.create(
     cameras=cameras,
-    project="20116dd5-0101-4ab4-b5da-ef0604f0fe34",  # "<project_id>",  # available via `client.project.get_projects()`
-    batch="98e32d23-5c9d-4cef-a3c5-8b7d82d097ea",  # "<batch_id>",  # availabel via `client.project.get_project_batches(project_id)`
-    annotation_types=["2DBB"],  # ["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
+    project="<project_id>",  # available via `client.project.get_projects()`
+    batch="<batch_id>",  # availabel via `client.project.get_project_batches(project_id)`
+    annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
     dryrun=True,
 )
 
