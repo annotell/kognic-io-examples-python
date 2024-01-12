@@ -1,70 +1,70 @@
-from __future__ import absolute_import
+from kognic.io.client import KognicIOClient
+from kognic.io.model.scene.lidars_and_cameras_sequence import (
+    Frame,
+    LidarsAndCamerasSequence,
+)
+from kognic.io.model.scene.metadata.metadata import FrameMetaData, MetaData
+from kognic.io.model.scene.resources import Image, PointCloud
 
-from datetime import datetime
-from typing import Optional
-from uuid import uuid4
-
-import kognic.io.client as IOC
-import kognic.io.model.scene as SceneModel
-import kognic.io.model.scene.lidars_and_cameras_sequence as LCSM
-import kognic.io.model.scene.resources as ResourceModel
-from examples.calibration.calibration import create_sensor_calibration
-from kognic.io.logger import setup_logging
-from kognic.io.model.scene.metadata.metadata import MetaData
-
-
-def run(client: IOC.KognicIOClient, project: Optional[str], dryrun: bool = True) -> Optional[SceneModel.CreateSceneResponse]:
-    print("Creating Lidar and Camera Sequence Scene...")
-
-    lidar_sensor1 = "lidar"
-    cam_sensor1 = "RFC01"
-    cam_sensor2 = "RFC02"
-    cam_sensor3 = "RFC03"
-    metadata = MetaData(**{"location-lat": 27.986065, "location-long": 86.922623, "vehicle_id": "abg"})
-
-    # Create calibration
-    calibration_spec = create_sensor_calibration(f"Collection {datetime.now()}", [lidar_sensor1], [cam_sensor1, cam_sensor2, cam_sensor3])
-    created_calibration = client.calibration.create_calibration(calibration_spec)
-
-    lidars_and_cameras_seq = LCSM.LidarsAndCamerasSequence(
-        external_id=f"LCS-example-{uuid4()}",
-        frames=[
-            LCSM.Frame(
-                frame_id="1",
-                relative_timestamp=0,
-                point_clouds=[
-                    ResourceModel.PointCloud(filename="./examples/resources/point_cloud_RFL01.las", sensor_name=lidar_sensor1),
-                ],
-                images=[
-                    ResourceModel.Image(filename="./examples/resources/img_RFC01.jpg", sensor_name=cam_sensor1),
-                    ResourceModel.Image(filename="./examples/resources/img_RFC02.jpg", sensor_name=cam_sensor2),
-                ],
-                metadata={"dut_status": "active"},
-            ),
-            LCSM.Frame(
-                frame_id="2",
-                relative_timestamp=100,
-                point_clouds=[
-                    ResourceModel.PointCloud(filename="./examples/resources/point_cloud_RFL02.las", sensor_name=lidar_sensor1),
-                ],
-                images=[
-                    ResourceModel.Image(filename="./examples/resources/img_RFC11.jpg", sensor_name=cam_sensor1),
-                    ResourceModel.Image(filename="./examples/resources/img_RFC12.jpg", sensor_name=cam_sensor2),
-                ],
-                metadata={"dut_status": "active"},
-            ),
+# Frames
+lidar_sensor1 = "lidar"
+cam_sensor1 = "RFC01"
+cam_sensor2 = "RFC02"
+frames = [
+    Frame(
+        frame_id="1",
+        relative_timestamp=0,
+        point_clouds=[
+            PointCloud(filename="./examples/resources/point_cloud_RFL01.las", sensor_name=lidar_sensor1),
         ],
-        calibration_id=created_calibration.id,
-        metadata=metadata,
-    )
-    # Add input
-    return client.lidars_and_cameras_sequence.create(lidars_and_cameras_seq, project=project, dryrun=dryrun)
+        images=[
+            Image(filename="./examples/resources/img_RFC01.jpg", sensor_name=cam_sensor1),
+            Image(filename="./examples/resources/img_RFC02.jpg", sensor_name=cam_sensor2),
+        ],
+        metadata=FrameMetaData(**{"dut_status": "active"}),  # metadata is optional and values are arbitary for this example
+    ),
+    Frame(
+        frame_id="2",
+        relative_timestamp=100,
+        point_clouds=[
+            PointCloud(filename="./examples/resources/point_cloud_RFL02.las", sensor_name=lidar_sensor1),
+        ],
+        images=[
+            Image(filename="./examples/resources/img_RFC11.jpg", sensor_name=cam_sensor1),
+            Image(filename="./examples/resources/img_RFC12.jpg", sensor_name=cam_sensor2),
+        ],
+        metadata=FrameMetaData(**{"dut_status": "active"}),  # metadata is optional and values are arbitary for this example
+    ),
+]
+
+# Scene
+# Note: a scene that involves a lidar sensor must have a calibration.
+# When creating a calibration, all sensors must match those present on the scene.
+# If this is not the case the scene will not be created
+# and a validation error will be returned by the Kognic API.
+lidars_and_cameras_sequence = LidarsAndCamerasSequence(
+    external_id="<scene_id>",
+    frames=frames,
+    calibration_id="7ce96618-c0a6-4eae-b29c-2d559f2df613",  # "<calibration_id>",  # available via `client.calibration.get_calibrations()`
+    metadata=MetaData(
+        **{
+            "location-lat": 27.986065,
+            "location-long": 86.922623,
+            "vehicle_id": "abg",
+        }
+    ),  # metadata is optional and values are arbitary for this example
+)
 
 
-if __name__ == "__main__":
-    setup_logging(level="INFO")
-    client = IOC.KognicIOClient()
+# Create an input on the Kognic Platform
+client = KognicIOClient()
 
-    # Project - Available via `client.project.get_projects()`
-    project = "<project-identifier>"
-    run(client, project)
+created_input = client.lidars_and_cameras_sequence.create(
+    lidars_and_cameras_sequence=lidars_and_cameras_sequence,
+    project="<project_id>",  # available via `client.project.get_projects()`
+    batch="<batch_id>",  # available via `client.project.get_project_batches(project_id)`
+    annotation_types=["<annotation-type>"],  # available via `client.project.get_annotation_types(project_id)`
+    dryrun=True,
+)
+
+print(created_input)  # displays the scene_uuid
