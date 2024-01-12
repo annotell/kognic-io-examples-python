@@ -1,6 +1,6 @@
 from kognic.io.client import KognicIOClient
 from kognic.io.model.scene.lidars_and_cameras import Frame, LidarsAndCameras
-from kognic.io.model.scene.metadata.metadata import MetaData, FrameMetaData
+from kognic.io.model.scene.metadata.metadata import MetaData
 from kognic.io.model.scene.resources import Image, PointCloud
 
 # Frame
@@ -25,12 +25,6 @@ frame = Frame(
             sensor_name=cam_sensor2,
         ),
     ],
-    metadata=FrameMetaData(
-        **{
-            "location-lat": 27.986065,
-            "location-long": 86.922623,
-        }
-    ),  # metadata is optional and values are arbitary for this example
 )
 
 # Scene
@@ -44,6 +38,8 @@ lidars_and_cameras = LidarsAndCameras(
     calibration_id="<calibration_id>",  # available via `client.calibration.get_calibrations()`
     metadata=MetaData(
         **{
+            "location-lat": 27.986065,
+            "location-long": 86.922623,
             "vehicle_id": "abg",
         }
     ),  # metadata is optional and values are arbitary for this example
