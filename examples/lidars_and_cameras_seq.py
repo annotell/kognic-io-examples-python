@@ -45,7 +45,7 @@ frames = [
 lidars_and_cameras_sequence = LidarsAndCamerasSequence(
     external_id="<scene_id>",
     frames=frames,
-    calibration_id="7ce96618-c0a6-4eae-b29c-2d559f2df613",  # "<calibration_id>",  # available via `client.calibration.get_calibrations()`
+    calibration_id="<calibration_id>",  # available via `client.calibration.get_calibrations()`
     metadata=MetaData(
         **{
             "location-lat": 27.986065,
