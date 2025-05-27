@@ -16,7 +16,7 @@ class SceneNotFinishedException(SceneException):
     pass
 
 
-def wait_for_scene_job(client: KognicIOClient, scene_uuid: str, timeout=20, fail_on_failed: bool = True) -> SceneStatus:
+def wait_for_scene_job(client: KognicIOClient, scene_uuid: str, timeout=20, fail_on_failed: bool = False) -> SceneStatus:
     start_time = time.time()
     while (time.time() - start_time) < timeout:
         response = client.scene.get_scenes_by_uuids(scene_uuids=[scene_uuid])

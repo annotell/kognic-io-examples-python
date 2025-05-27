@@ -58,7 +58,7 @@ def run(
     scene_response = client.lidars_and_cameras.create(lidars_and_cameras, dryrun=dryrun)
     if dryrun:
         return scene_response
-    wait_for_scene_job(client=client, scene_uuid=scene_response.scene_uuid)
+    wait_for_scene_job(client=client, scene_uuid=scene_response.scene_uuid, fail_on_failed=True)
 
     # Create some pre-annotations using the OpenLabel model.
     client.pre_annotation.create(scene_uuid=scene_response.scene_uuid, pre_annotation=pre_annotation, dryrun=dryrun)
