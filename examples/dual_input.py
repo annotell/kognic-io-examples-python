@@ -19,7 +19,6 @@ def run(
     client: KognicIOClient,
     sequence_project: str = "lidars_and_cameras_sequence-project",
     aggregated_sequence_project: str = "aggregated_lidars_and_cameras_sequence-project",
-    dryrun: bool = True,
 ) -> list[Input]:
 
     lidar_sensor1 = "RFL01"
@@ -50,10 +49,8 @@ def run(
 
     # Create the standalone scene.
     print("Create scene...")
-    scene_response = client.lidars_and_cameras_sequence.create(scene, dryrun=dryrun)
+    scene_response = client.lidars_and_cameras_sequence.create(scene, dryrun=False)
     scene_uuid = scene_response.scene_uuid
-    if dryrun:
-        return scene_response
     print(f"Wait for scene {scene_uuid} ...")
     wait_for_scene_job(client, scene_uuid, fail_on_failed=True)
     print(f"Scene was created: {scene_uuid}")
@@ -123,12 +120,12 @@ def run(
     print("Create pre-annotations ...")
     # Note external IDs are unique within a scene.
     pre_annotation1 = client.pre_annotation.create(
-        scene_uuid=scene_uuid, external_id="pa-1", pre_annotation=pre_annotation_ol, dryrun=dryrun
+        scene_uuid=scene_uuid, external_id="pa-1", pre_annotation=pre_annotation_ol, dryrun=False
     )
     pre_annotation_id1 = pre_annotation1.id
     print(f"Pre-annotation 1: {pre_annotation_id1}")
     pre_annotation2 = client.pre_annotation.create(
-        scene_uuid=scene_uuid, external_id="pa-2", pre_annotation=pre_annotation_ol, dryrun=dryrun
+        scene_uuid=scene_uuid, external_id="pa-2", pre_annotation=pre_annotation_ol, dryrun=False
     )
     pre_annotation_id2 = pre_annotation2.id
     print(f"Pre-annotation 2: {pre_annotation_id2}")
@@ -138,9 +135,9 @@ def run(
     # The second may expect either an ALCS or LCS scene and needs a TaskDef/Annotation Instruction WITH aggregation.
 
     print("Create request inputs ...")
-    request_input1 = client.input.create_from_pre_annotation(pre_annotation_id1, project=sequence_project, dryrun=dryrun)
+    request_input1 = client.input.create_from_pre_annotation(pre_annotation_id1, project=sequence_project, dryrun=False)
     print(f"Request input 1 created: {request_input1}")
-    request_input2 = client.input.create_from_pre_annotation(pre_annotation_id2, project=aggregated_sequence_project, dryrun=dryrun)
+    request_input2 = client.input.create_from_pre_annotation(pre_annotation_id2, project=aggregated_sequence_project, dryrun=False)
     print(f"Request input 2 created: {request_input2}")
 
     return [request_input1, request_input2]
@@ -150,4 +147,4 @@ if __name__ == "__main__":
     setup_logging(level="INFO")
     client = KognicIOClient()
 
-    run(client, dryrun=True)
+    run(client)
