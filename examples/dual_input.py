@@ -122,22 +122,22 @@ def run(
     pre_annotation1 = client.pre_annotation.create(
         scene_uuid=scene_uuid, external_id="pa-1", pre_annotation=pre_annotation_ol, dryrun=False
     )
-    pre_annotation_id1 = pre_annotation1.id
-    print(f"Pre-annotation 1: {pre_annotation_id1}")
+    pre_annotation_uuid1 = pre_annotation1.uuid
+    print(f"Pre-annotation 1: {pre_annotation_uuid1}")
     pre_annotation2 = client.pre_annotation.create(
         scene_uuid=scene_uuid, external_id="pa-2", pre_annotation=pre_annotation_ol, dryrun=False
     )
-    pre_annotation_id2 = pre_annotation2.id
-    print(f"Pre-annotation 2: {pre_annotation_id2}")
+    pre_annotation_uuid2 = pre_annotation2.uuid
+    print(f"Pre-annotation 2: {pre_annotation_uuid2}")
 
     # Create an input in two requests:
     # The first request should expect an LCS scene and needs a TaskDef/Annotation Instruction WITHOUT aggregation.
     # The second may expect either an ALCS or LCS scene and needs a TaskDef/Annotation Instruction WITH aggregation.
 
     print("Create request inputs ...")
-    request_input1 = client.input.create_from_pre_annotation(pre_annotation_id1, project=sequence_project, dryrun=False)
+    request_input1 = client.input.create_from_pre_annotation(pre_annotation_uuid1, project=sequence_project, dryrun=False)
     print(f"Request input 1 created: {request_input1}")
-    request_input2 = client.input.create_from_pre_annotation(pre_annotation_id2, project=aggregated_sequence_project, dryrun=False)
+    request_input2 = client.input.create_from_pre_annotation(pre_annotation_uuid2, project=aggregated_sequence_project, dryrun=False)
     print(f"Request input 2 created: {request_input2}")
 
     return [request_input1, request_input2]
