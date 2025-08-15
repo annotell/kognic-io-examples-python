@@ -126,13 +126,13 @@ def run(client: KognicIOClient, cameras_sequence_project: str = "cameras_sequenc
     pre_annotation1 = client.pre_annotation.create(
         scene_uuid=scene_uuid, external_id="pa-1", pre_annotation=pre_annotation_ol1, dryrun=False
     )
-    pre_annotation_id1 = pre_annotation1.uuid
+    pre_annotation_id1 = pre_annotation1.id
     print(f"Pre-annotation 1: {pre_annotation_id1}")
 
     pre_annotation2 = client.pre_annotation.create(
         scene_uuid=scene_uuid, external_id="pa-2", pre_annotation=pre_annotation_ol2, dryrun=False
     )
-    pre_annotation_id2 = pre_annotation2.uuid
+    pre_annotation_id2 = pre_annotation2.id
     print(f"Pre-annotation 2: {pre_annotation_id2}")
 
     # Create an input with the first pre-annotation

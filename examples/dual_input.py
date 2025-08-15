@@ -122,12 +122,12 @@ def run(
     pre_annotation1 = client.pre_annotation.create(
         scene_uuid=scene_uuid, external_id="pa-1", pre_annotation=pre_annotation_ol, dryrun=False
     )
-    pre_annotation_uuid1 = pre_annotation1.uuid
+    pre_annotation_uuid1 = pre_annotation1.id
     print(f"Pre-annotation 1: {pre_annotation_uuid1}")
     pre_annotation2 = client.pre_annotation.create(
         scene_uuid=scene_uuid, external_id="pa-2", pre_annotation=pre_annotation_ol, dryrun=False
     )
-    pre_annotation_uuid2 = pre_annotation2.uuid
+    pre_annotation_uuid2 = pre_annotation2.id
     print(f"Pre-annotation 2: {pre_annotation_uuid2}")
 
     # Create an input in two requests:
