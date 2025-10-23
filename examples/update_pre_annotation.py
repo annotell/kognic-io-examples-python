@@ -5,8 +5,9 @@ import time
 from datetime import datetime
 from uuid import uuid4
 
-import kognic.io.model.scene.cameras_sequence as CS
 import kognic.openlabel.models.models as OLM
+
+import kognic.io.model.scene.cameras_sequence as CS
 from examples.calibration.calibration import create_sensor_calibration
 from examples.utils import wait_for_scene_job
 from kognic.io.client import KognicIOClient

@@ -5,8 +5,9 @@ from datetime import datetime
 from typing import Generator, List, Optional
 from uuid import uuid4
 
-import kognic.io.model.scene.lidars_and_cameras_sequence as LCSM
 import kognic.openlabel.models as OLM
+
+import kognic.io.model.scene.lidars_and_cameras_sequence as LCSM
 from examples.calibration.calibration import create_sensor_calibration
 from kognic.io.client import KognicIOClient
 from kognic.io.logger import setup_logging

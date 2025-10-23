@@ -12,7 +12,7 @@ from kognic.io.model import CreateSceneResponse
 from kognic.io.model.scene.scene_request import EgoVehiclePose, Frame, ImageResource, LocalFile, SceneRequest, SensorResource
 
 
-def run(client: KognicIOClient) -> Optional[CreateSceneResponse]:
+def run(client: KognicIOClient, workspace_id: str) -> Optional[CreateSceneResponse]:
     print("Creating Lidar and Camera Sequence Scene...")
 
     lidar_sensor1 = "lidar"
@@ -26,7 +26,7 @@ def run(client: KognicIOClient) -> Optional[CreateSceneResponse]:
     created_calibration = client.calibration.create_calibration(calibration_spec)
 
     scene = SceneRequest(
-        workspace_id="557ca28f-c405-4dd3-925f-ee853d858e4b",
+        workspace_id=workspace_id,
         external_id=f"scene-full-example-{uuid4()}",
         frames=[
             Frame(
@@ -94,7 +94,7 @@ def run(client: KognicIOClient) -> Optional[CreateSceneResponse]:
     return client.scene.create_scene(scene)
 
 
-def run_with_alternative_data_sources(client: KognicIOClient) -> Optional[CreateSceneResponse]:
+def run_with_alternative_data_sources(client: KognicIOClient, workspace_id: str) -> Optional[CreateSceneResponse]:
     print("Creating Lidar and Camera Sequence Scene...")
 
     lidar_sensor1 = "lidar"
@@ -117,7 +117,7 @@ def run_with_alternative_data_sources(client: KognicIOClient) -> Optional[Create
     img2_name = "./examples/resources/img_RFC02.jpg"
 
     scene = SceneRequest(
-        workspace_id="557ca28f-c405-4dd3-925f-ee853d858e4b",
+        workspace_id=workspace_id,
         external_id=f"scene-full-example-{uuid4()}",
         frames=[
             Frame(
@@ -188,7 +188,7 @@ def run_with_alternative_data_sources(client: KognicIOClient) -> Optional[Create
     return client.scene.create_scene(scene)
 
 
-def run_images_only(client: KognicIOClient) -> Optional[CreateSceneResponse]:
+def run_images_only(client: KognicIOClient, workspace_id: str) -> Optional[CreateSceneResponse]:
     print("Creating Cameras Sequence Scene...")
 
     sensor1 = "RFC01"
@@ -196,7 +196,7 @@ def run_images_only(client: KognicIOClient) -> Optional[CreateSceneResponse]:
     metadata = {"location-lat": 27.986065, "location-long": 86.922623, "vehicle_id": "abg"}
 
     scene = SceneRequest(
-        workspace_id="557ca28f-c405-4dd3-925f-ee853d858e4b",
+        workspace_id=workspace_id,
         external_id=f"scene-images-example-{uuid4()}",
         frames=[
             Frame(

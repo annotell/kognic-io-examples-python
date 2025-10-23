@@ -5,13 +5,14 @@ from datetime import datetime
 from typing import Optional
 from uuid import uuid4
 
+from kognic.openlabel.models import OpenLabelAnnotation
+
 import kognic.io.model.scene.lidars_and_cameras as LC
 from examples.calibration.calibration import create_sensor_calibration
 from examples.utils import wait_for_scene_job
 from kognic.io.client import KognicIOClient
 from kognic.io.logger import setup_logging
 from kognic.io.model import Image, PointCloud
-from kognic.openlabel.models import OpenLabelAnnotation
 
 
 def run(

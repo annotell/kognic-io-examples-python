@@ -4,8 +4,9 @@ import os.path
 from datetime import datetime
 from uuid import uuid4
 
-import kognic.io.model.scene.lidars_and_cameras_sequence as LCS
 import kognic.openlabel.models.models as OLM
+
+import kognic.io.model.scene.lidars_and_cameras_sequence as LCS
 from examples.calibration.calibration import create_sensor_calibration
 from examples.utils import wait_for_scene_job
 from kognic.io.client import KognicIOClient
