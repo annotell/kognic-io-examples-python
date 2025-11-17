@@ -1,16 +1,23 @@
-from __future__ import absolute_import
+# from __future__ import absolute_import
 
+import os
 import os.path
+import sys
 from datetime import datetime
 from typing import Optional
 from uuid import uuid4
 
 import kognic.io.model.scene.lidars_and_cameras_sequence as LCSM
-from examples.calibration.calibration import create_sensor_calibration
-from examples.imu_data.create_imu_data import create_dummy_imu_data
 from kognic.io.client import KognicIOClient
 from kognic.io.logger import setup_logging
 from kognic.io.model import CreateSceneResponse, Image, ImageMetadata, PointCloud
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
+
+from examples.calibration.calibration import create_sensor_calibration
+from examples.imu_data.create_imu_data import create_dummy_imu_data
 
 
 def run(client: KognicIOClient, dryrun: bool = True, **kwargs) -> Optional[CreateSceneResponse]:
@@ -24,7 +31,9 @@ def run(client: KognicIOClient, dryrun: bool = True, **kwargs) -> Optional[Creat
     examples_path = os.path.dirname(__file__)
 
     # Create calibration
-    calibration_spec = create_sensor_calibration(f"Collection {datetime.now()}", [lidar_sensor1, lidar_sensor2], [cam_sensor1, cam_sensor2])
+    calibration_spec = create_sensor_calibration(
+        f"Collection {datetime.now()}", [lidar_sensor1, lidar_sensor2], [cam_sensor1, cam_sensor2]
+    )
     created_calibration = client.calibration.create_calibration(calibration_spec)
 
     # Generate IMU data
@@ -49,14 +58,16 @@ def run(client: KognicIOClient, dryrun: bool = True, **kwargs) -> Optional[Creat
                         filename=examples_path + "/resources/img_RFC01.jpg",
                         sensor_name=cam_sensor1,
                         metadata=ImageMetadata(
-                            shutter_time_start_ns=start_ts + 0.5 * ONE_MILLISECOND, shutter_time_end_ns=start_ts + 1.5 * ONE_MILLISECOND
+                            shutter_time_start_ns=start_ts + 0.5 * ONE_MILLISECOND,
+                            shutter_time_end_ns=start_ts + 1.5 * ONE_MILLISECOND,
                         ),
                     ),
                     Image(
                         filename=examples_path + "/resources/img_RFC02.jpg",
                         sensor_name=cam_sensor2,
                         metadata=ImageMetadata(
-                            shutter_time_start_ns=start_ts + 0.5 * ONE_MILLISECOND, shutter_time_end_ns=start_ts + 1.5 * ONE_MILLISECOND
+                            shutter_time_start_ns=start_ts + 0.5 * ONE_MILLISECOND,
+                            shutter_time_end_ns=start_ts + 1.5 * ONE_MILLISECOND,
                         ),
                     ),
                 ],
@@ -74,14 +85,16 @@ def run(client: KognicIOClient, dryrun: bool = True, **kwargs) -> Optional[Creat
                         filename=examples_path + "/resources/img_RFC11.jpg",
                         sensor_name=cam_sensor1,
                         metadata=ImageMetadata(
-                            shutter_time_start_ns=start_ts + 4.5 * ONE_MILLISECOND, shutter_time_end_ns=start_ts + 5.5 * ONE_MILLISECOND
+                            shutter_time_start_ns=start_ts + 4.5 * ONE_MILLISECOND,
+                            shutter_time_end_ns=start_ts + 5.5 * ONE_MILLISECOND,
                         ),
                     ),
                     Image(
                         filename=examples_path + "/resources/img_RFC12.jpg",
                         sensor_name=cam_sensor2,
                         metadata=ImageMetadata(
-                            shutter_time_start_ns=start_ts + 4.5 * ONE_MILLISECOND, shutter_time_end_ns=start_ts + 5.5 * ONE_MILLISECOND
+                            shutter_time_start_ns=start_ts + 4.5 * ONE_MILLISECOND,
+                            shutter_time_end_ns=start_ts + 5.5 * ONE_MILLISECOND,
                         ),
                     ),
                 ],
@@ -97,9 +110,18 @@ def run(client: KognicIOClient, dryrun: bool = True, **kwargs) -> Optional[Creat
 
 if __name__ == "__main__":
     setup_logging(level="INFO")
-    client = KognicIOClient()
+    auth_api_url = "https://auth.staging-cn-pub.kognic.io"
+    input_api_url = "https://input.staging-cn-pub.kognic.io"
+    workspace_id = "b61e52c9-fffa-4ec7-b847-d3ef939a7adb"
+    os.environ["KOGNIC_CREDENTIALS"] = "/Users/willim/.config/kognic/credentials-cn-staging-pub.json"
+    client = KognicIOClient(
+        host=input_api_url,
+        auth_host=auth_api_url,
+        write_workspace_id=workspace_id,
+    )
 
     # Project - Available via `client.project.get_projects()`
-    project = "<project-id>"
+    project = "multisensor-project"
+    batch = "multisensor-1"
 
-    run(client, project=project)
+    run(client, project=project, batch=batch)

@@ -1,0 +1,52 @@
+[build-system]
+requires = [
+    "setuptools-scm[toml]>=7",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kognic-io-example-library"
+dynamic = ["version"]
+authors = [
+    { name = "Kognic", email = "python.core.maintainers@kognic.com" },
+]
+requires-python = ">=3.10"
+description = "Template structure for creating a new Python library"
+dependencies = [
+]
+
+[project.optional-dependencies]
+test = [
+    # Here you add dependencies that are only needed for testing, eg. "kognic-otel-testing",
+]
+
+[project.urls]
+homepage = "https://github.com/annotell/example-library-python"
+source = "https://github.com/annotell/example-library-python"
+releasenotes = "https://github.com/annotell/example-library-python/releases"
+
+[tool.setuptools_scm]
+# this section is needed, but can be empty
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "W", "I001", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+# Allow unused imports in __init__.py files
+"__init__.py" = ["E402", "F401"]
+
+# allow random and assert in tests
+"tests/*"   = ["S101", "S311"]
+
+
+[tool.pylint]
+# Uncomment to enable pylint for pydantic
+# extension-pkg-allow-list=["pydantic"]
+
+[tool.pyright]
+# Remove if you don't want type checking
+include = ["examples", "tests"]
