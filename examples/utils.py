@@ -25,14 +25,17 @@ class PreAnnotationNotAvailableException(Exception):
     pass
 
 
-def wait_for_scene_job(client: KognicIOClient, scene_uuid: str, timeout=60, fail_on_failed: bool = False) -> SceneStatus:
+DEFAULT_TIMEOUT = 300  # 5 minutes
+
+
+def wait_for_scene_job(client: KognicIOClient, scene_uuid: str, timeout=DEFAULT_TIMEOUT, fail_on_failed: bool = False) -> SceneStatus:
     wait_for = [SceneStatus.Created] if fail_on_failed else [SceneStatus.Created, SceneStatus.Failed]
     fail_on = [SceneStatus.Failed] if fail_on_failed else []
     return wait_for_scene_job_status(client, scene_uuid, wait_for, fail_on, timeout=timeout)
 
 
 def wait_for_scene_job_status(
-    client: KognicIOClient, scene_uuid: str, wait_for: List[SceneStatus], fail_on: List[SceneStatus], timeout=60
+    client: KognicIOClient, scene_uuid: str, wait_for: List[SceneStatus], fail_on: List[SceneStatus], timeout=DEFAULT_TIMEOUT
 ) -> SceneStatus:
     start_time = time.time()
     while (time.time() - start_time) < timeout:
@@ -48,14 +51,16 @@ def wait_for_scene_job_status(
     raise SceneNotFinishedException(f"Job was not finished: {scene_uuid}")
 
 
-def wait_for_pre_annotation(client: KognicIOClient, pre_annotation_uuid: str, timeout=60, fail_on_failed: bool = False) -> None:
+def wait_for_pre_annotation(
+    client: KognicIOClient, pre_annotation_uuid: str, timeout=DEFAULT_TIMEOUT, fail_on_failed: bool = False
+) -> None:
     wait_for = ["available"] if fail_on_failed else ["available", "failed"]
     fail_on = ["failed"] if fail_on_failed else []
     return wait_for_pre_annotation_status(client, pre_annotation_uuid, wait_for, fail_on, timeout=timeout)
 
 
 def wait_for_pre_annotation_status(
-    client: KognicIOClient, pre_annotation_uuid: str, wait_for: List[str], fail_on: List[str], timeout=60
+    client: KognicIOClient, pre_annotation_uuid: str, wait_for: List[str], fail_on: List[str], timeout=DEFAULT_TIMEOUT
 ) -> None:
     start_time = time.time()
     while (time.time() - start_time) < timeout:
