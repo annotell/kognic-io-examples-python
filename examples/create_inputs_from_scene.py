@@ -9,13 +9,10 @@ def run(
     scene_uuid: str,
     project: str,
     batch: Optional[str] = None,
-    annotation_types: Optional[List[str]] = None,
     dryrun: bool = False,
 ) -> Optional[List[Input]]:
     print("Creating inputs from scene...")
-    return client.cameras.create_from_scene(
-        scene_uuid=scene_uuid, project=project, batch=batch, annotation_types=annotation_types, dryrun=dryrun
-    )
+    return client.cameras.create_from_scene(scene_uuid=scene_uuid, project=project, batch=batch, dryrun=dryrun)
 
 
 if __name__ == "__main__":

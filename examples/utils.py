@@ -3,6 +3,7 @@ from typing import List
 
 from kognic.io.client import KognicIOClient
 from kognic.io.model import SceneStatus
+from kognic.io.model.input.input import Input
 
 
 class SceneException(Exception):
@@ -25,7 +26,11 @@ class PreAnnotationNotAvailableException(Exception):
     pass
 
 
-DEFAULT_TIMEOUT = 300  # 5 minutes
+class InputNotCreatedException(Exception):
+    pass
+
+
+DEFAULT_TIMEOUT = 300
 
 
 def wait_for_scene_job(client: KognicIOClient, scene_uuid: str, timeout=DEFAULT_TIMEOUT, fail_on_failed: bool = False) -> SceneStatus:
@@ -51,9 +56,7 @@ def wait_for_scene_job_status(
     raise SceneNotFinishedException(f"Job was not finished: {scene_uuid}")
 
 
-def wait_for_pre_annotation(
-    client: KognicIOClient, pre_annotation_uuid: str, timeout=DEFAULT_TIMEOUT, fail_on_failed: bool = False
-) -> None:
+def wait_for_pre_annotation(client: KognicIOClient, pre_annotation_uuid: str, timeout=DEFAULT_TIMEOUT, fail_on_failed: bool = False) -> str:
     wait_for = ["available"] if fail_on_failed else ["available", "failed"]
     fail_on = ["failed"] if fail_on_failed else []
     return wait_for_pre_annotation_status(client, pre_annotation_uuid, wait_for, fail_on, timeout=timeout)
@@ -61,7 +64,7 @@ def wait_for_pre_annotation(
 
 def wait_for_pre_annotation_status(
     client: KognicIOClient, pre_annotation_uuid: str, wait_for: List[str], fail_on: List[str], timeout=DEFAULT_TIMEOUT
-) -> None:
+) -> str:
     start_time = time.time()
     while (time.time() - start_time) < timeout:
         preanno = client.pre_annotation.list(ids=[pre_annotation_uuid])[0]
@@ -75,3 +78,13 @@ def wait_for_pre_annotation_status(
         time.sleep(1)
 
     raise PreAnnotationNotAvailableException(f"Pre-annotation did not become available: {pre_annotation_uuid}")
+
+
+def wait_for_inputs_for_scene(client: KognicIOClient, scene_uuid: str, count: int = 1, timeout=DEFAULT_TIMEOUT) -> list[Input]:
+    start_time = time.time()
+    while (time.time() - start_time) < timeout:
+        request_inputs = client.input.query_inputs(scene_uuids=[scene_uuid])
+        if len(request_inputs) >= count:
+            return request_inputs
+        time.sleep(1)
+    raise InputNotCreatedException(f">={count} request inputs did not get created for scene {scene_uuid}")

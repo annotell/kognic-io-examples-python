@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import os.path
 from datetime import datetime
-from typing import Generator, List, Optional
+from typing import Generator
 from uuid import uuid4
 
 import kognic.openlabel.models as OLM
@@ -18,7 +18,6 @@ from kognic.io.tools.input_creation import InputCreationResult, SceneWithPreAnno
 def run(
     client: KognicIOClient,
     project: str,
-    annotation_types: Optional[List[str]] = None,
     dryrun: bool = True,
     include_preannotations: bool = True,
 ) -> Generator[InputCreationResult, None, None]:
@@ -148,9 +147,7 @@ def run(
         SceneWithPreAnnotation(scene=lidars_and_cameras_2, pre_annotation=pre_annotation_2 if include_preannotations else None),
     ]
 
-    yield from create_inputs(
-        client=client, scenes_with_pre_annotations=scenes, project=project, annotation_types=annotation_types, dryrun=dryrun
-    )
+    yield from create_inputs(client=client, scenes_with_pre_annotations=scenes, project=project, dryrun=dryrun)
 
 
 if __name__ == "__main__":
@@ -160,7 +157,4 @@ if __name__ == "__main__":
     # Project - Available via `client.project.get_projects()`
     project = "<project-id>"
 
-    # Annotation Types - Available via `client.project.get_annotation_types(project)`
-    annotation_types = ["<annotation-type>"]
-
-    run(client, project, annotation_types, dryrun=True)
+    run(client, project, dryrun=True)

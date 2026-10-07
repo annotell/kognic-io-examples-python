@@ -12,13 +12,13 @@ from kognic.io.model import CreateSceneResponse, Image
 base_dir = Path(__file__).parent.absolute()
 
 
-def run(client: KognicIOClient, dryrun: bool = True, **kwargs) -> Optional[CreateSceneResponse]:
+def run(client: KognicIOClient, dryrun: bool = True, external_id: Optional[str] = None, **kwargs) -> Optional[CreateSceneResponse]:
     print("Creating Cameras Scene...")
 
     metadata = {"location-lat": 27.986065, "location-long": 86.922623, "vehicle_id": "abg"}
 
     scene = CM.Cameras(
-        external_id=f"cameras-example-{uuid4()}",
+        external_id=external_id or f"cameras-example-{uuid4()}",
         frame=CM.Frame(
             images=[
                 Image(

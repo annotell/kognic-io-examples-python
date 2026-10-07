@@ -28,6 +28,7 @@ def run(client: KognicIOClient, open_label_uuid: str, error_type_id: str) -> Rev
                 metadata={"key": "value"},
             )
         ],
+        # Leave out workflow when the input is in an integration review phase, e.g. Client Automatic Review
         workflow=ReviewWorkflowEnum.CORRECT,
         accepted=False,
     )

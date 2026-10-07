@@ -21,10 +21,7 @@ def example_custom_camera_calibration():
         Point2d(x=-1, y=-1),  # Point is behind camera
     ]
 
-    test_cases = [
-        TestCase(point3d=point3d, point2d=point2d)
-        for point3d, point2d in zip(points, expected)  # noqa: B905 (strict parameter was introduced in py3.10)
-    ]
+    test_cases = [TestCase(point3d=point3d, point2d=point2d) for point3d, point2d in zip(points, expected, strict=True)]
 
     return CustomCameraCalibration.from_file(
         wasm_path="./examples/resources/pinhole.wasm",
